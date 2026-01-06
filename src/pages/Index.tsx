@@ -2,15 +2,20 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BottomNav } from "@/components/BottomNav";
 import { HomeView } from "@/components/HomeView";
+import { PlayView } from "@/components/PlayView";
 import { PathsView } from "@/components/PathsView";
 import { ReadView } from "@/components/ReadView";
 import { ProfileView } from "@/components/ProfileView";
 import { QuizExperience } from "@/components/QuizExperience";
+import { PlayQuizExperience } from "@/components/PlayQuizExperience";
 import heroLight from "@/assets/hero-light.jpg";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("home");
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showPlayQuiz, setShowPlayQuiz] = useState(false);
+  const [playQuizMode, setPlayQuizMode] = useState<"book" | "theme">("theme");
+  const [playQuizSelection, setPlayQuizSelection] = useState("");
 
   const handleStartQuiz = () => {
     setShowQuiz(true);
@@ -24,10 +29,26 @@ const Index = () => {
     setShowQuiz(false);
   };
 
+  const handleStartPlayQuiz = (mode: "book" | "theme", selection: string) => {
+    setPlayQuizMode(mode);
+    setPlayQuizSelection(selection);
+    setShowPlayQuiz(true);
+  };
+
+  const handleClosePlayQuiz = () => {
+    setShowPlayQuiz(false);
+  };
+
+  const handleCompletePlayQuiz = () => {
+    setShowPlayQuiz(false);
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case "home":
         return <HomeView onStartQuiz={handleStartQuiz} />;
+      case "play":
+        return <PlayView onStartQuiz={handleStartPlayQuiz} />;
       case "paths":
         return <PathsView onSelectPath={handleStartQuiz} />;
       case "read":
@@ -73,6 +94,18 @@ const Index = () => {
       <AnimatePresence>
         {showQuiz && (
           <QuizExperience onClose={handleCloseQuiz} onComplete={handleCompleteQuiz} />
+        )}
+      </AnimatePresence>
+
+      {/* Play Quiz Experience Modal */}
+      <AnimatePresence>
+        {showPlayQuiz && (
+          <PlayQuizExperience
+            mode={playQuizMode}
+            selection={playQuizSelection}
+            onClose={handleClosePlayQuiz}
+            onComplete={handleCompletePlayQuiz}
+          />
         )}
       </AnimatePresence>
     </div>
