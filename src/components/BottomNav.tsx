@@ -1,4 +1,4 @@
-import { Home, BookOpen, Sparkles, User } from "lucide-react";
+import { Home, BookOpen, Sparkles, User, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BottomNavProps {
@@ -8,6 +8,7 @@ interface BottomNavProps {
 
 const navItems = [
   { id: "home", icon: Home, label: "Home" },
+  { id: "play", icon: Play, label: "Play" },
   { id: "paths", icon: Sparkles, label: "Paths" },
   { id: "read", icon: BookOpen, label: "Read" },
   { id: "profile", icon: User, label: "Profile" },
