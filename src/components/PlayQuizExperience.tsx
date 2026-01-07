@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, CheckCircle2, XCircle, Heart, BookOpen, Sparkles } from "lucide-react";
+import { X, ArrowRight, Heart, BookOpen, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
@@ -435,7 +435,6 @@ export function PlayQuizExperience({ mode, selection, onClose, onComplete }: Pla
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-  const [correctCount, setCorrectCount] = useState(0);
 
   const questions = useMemo(() => {
     if (mode === "theme") {
@@ -446,7 +445,6 @@ export function PlayQuizExperience({ mode, selection, onClose, onComplete }: Pla
 
   const question = questions[currentQuestion];
   const progress = ((currentQuestion + 1) / questions.length) * 100;
-  const isCorrect = question.type === "reflection" || selectedOption === question.correctAnswer;
 
   const handleOptionSelect = (index: number) => {
     if (showResult) return;
@@ -458,9 +456,6 @@ export function PlayQuizExperience({ mode, selection, onClose, onComplete }: Pla
 
     if (!showResult) {
       setShowResult(true);
-      if (isCorrect && question.type !== "reflection") {
-        setCorrectCount((prev) => prev + 1);
-      }
     } else {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
@@ -486,25 +481,17 @@ export function PlayQuizExperience({ mode, selection, onClose, onComplete }: Pla
         : "border-border bg-card hover:border-primary/50";
     }
 
-    if (question.type === "reflection") {
-      return selectedOption === index
-        ? "border-primary bg-gold-light"
-        : "border-border bg-card";
+    // After showing result - highlight selected answer warmly, show insight gently
+    if (selectedOption === index) {
+      return "border-primary bg-gold-light";
     }
-
-    if (index === question.correctAnswer) {
-      return "border-sage bg-sage-light";
-    }
-    if (selectedOption === index && index !== question.correctAnswer) {
-      return "border-destructive bg-destructive/10";
+    if (question.type !== "reflection" && index === question.correctAnswer) {
+      return "border-sage/50 bg-sage-light/50";
     }
     return "border-border bg-card opacity-50";
   };
 
   if (isComplete) {
-    const totalAnswered = questions.filter((q) => q.type !== "reflection").length;
-    const reflectionCount = questions.filter((q) => q.type === "reflection").length;
-
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -517,35 +504,21 @@ export function PlayQuizExperience({ mode, selection, onClose, onComplete }: Pla
           transition={{ type: "spring", duration: 0.6 }}
           className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-gold"
         >
-          <CheckCircle2 className="h-12 w-12 text-primary-foreground" />
+          <Heart className="h-12 w-12 text-primary-foreground" />
         </motion.div>
 
         <h2 className="mb-2 font-display text-3xl font-bold text-foreground">
-          Well Done!
+          Beautiful Reflection
         </h2>
         
-        <div className="mb-4 text-center">
-          {totalAnswered > 0 && (
-            <p className="text-lg text-foreground">
-              <span className="font-semibold text-primary">{correctCount}</span> of{" "}
-              <span className="font-semibold">{totalAnswered}</span> correct
-            </p>
-          )}
-          {reflectionCount > 0 && (
-            <p className="text-sm text-muted-foreground">
-              + {reflectionCount} reflection{reflectionCount > 1 ? "s" : ""} completed
-            </p>
-          )}
-        </div>
-
-        <p className="mb-8 text-center text-muted-foreground">
-          You've completed the {getSelectionTitle()} quiz. May these truths stay with you today.
+        <p className="mb-8 max-w-xs text-center text-muted-foreground">
+          You've explored {getSelectionTitle()} with an open heart. May these truths stay with you today.
         </p>
 
         <div className="flex w-full flex-col gap-3">
           <Button variant="gold" size="lg" className="w-full" onClick={onComplete}>
             <Heart className="h-4 w-4" />
-            Continue
+            Continue Your Journey
           </Button>
         </div>
       </motion.div>
@@ -635,14 +608,8 @@ export function PlayQuizExperience({ mode, selection, onClose, onComplete }: Pla
                   )}
                 >
                   {showResult && question.type !== "reflection" && index === question.correctAnswer && (
-                    <CheckCircle2 className="h-5 w-5 shrink-0 text-sage" />
+                    <Sparkles className="h-5 w-5 shrink-0 text-sage" />
                   )}
-                  {showResult &&
-                    question.type !== "reflection" &&
-                    selectedOption === index &&
-                    index !== question.correctAnswer && (
-                      <XCircle className="h-5 w-5 shrink-0 text-destructive" />
-                    )}
                   <span className="text-sm text-foreground">{option}</span>
                 </motion.button>
               ))}
@@ -657,29 +624,17 @@ export function PlayQuizExperience({ mode, selection, onClose, onComplete }: Pla
                   className="mt-6 space-y-4"
                 >
                   {/* Explanation */}
-                  <div
-                    className={cn(
-                      "rounded-2xl p-4",
-                      question.type === "reflection"
-                        ? "bg-gold-light"
-                        : isCorrect
-                        ? "bg-sage-light"
-                        : "bg-terracotta-light"
-                    )}
-                  >
-                    {question.type !== "reflection" && (
+                  <div className="rounded-2xl bg-gold-light p-4">
+                    {question.type !== "reflection" && selectedOption === question.correctAnswer && (
                       <p className="mb-2 flex items-center gap-2 font-medium text-foreground">
-                        {isCorrect ? (
-                          <>
-                            <CheckCircle2 className="h-4 w-4 text-sage" />
-                            Correct!
-                          </>
-                        ) : (
-                          <>
-                            <XCircle className="h-4 w-4 text-terracotta" />
-                            Not quite
-                          </>
-                        )}
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        Great insight!
+                      </p>
+                    )}
+                    {question.type !== "reflection" && selectedOption !== question.correctAnswer && (
+                      <p className="mb-2 flex items-center gap-2 font-medium text-foreground">
+                        <Heart className="h-4 w-4 text-terracotta" />
+                        Here's another perspective
                       </p>
                     )}
                     <p className="text-sm leading-relaxed text-foreground">

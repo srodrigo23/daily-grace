@@ -1,8 +1,35 @@
 import { motion } from "framer-motion";
-import { Settings, ChevronRight, Heart, Crown, Bell, Moon, Gift } from "lucide-react";
+import { Settings, ChevronRight, Heart, Crown, Bell, Gift, BookOpen, Compass, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+
+interface JourneyHighlight {
+  icon: typeof BookOpen;
+  title: string;
+  description: string;
+  color: string;
+}
+
+const journeyHighlights: JourneyHighlight[] = [
+  {
+    icon: BookOpen,
+    title: "Finding Hope",
+    description: "Currently exploring",
+    color: "text-primary",
+  },
+  {
+    icon: Compass,
+    title: "Forgiveness",
+    description: "Recently visited",
+    color: "text-sage",
+  },
+  {
+    icon: Sparkles,
+    title: "Daily Reflections",
+    description: "Part of your journey",
+    color: "text-terracotta",
+  },
+];
 
 export function ProfileView() {
   return (
@@ -16,54 +43,54 @@ export function ProfileView() {
           <h1 className="font-display text-3xl font-bold text-foreground">
             Your Journey
           </h1>
-          <p className="text-muted-foreground">7 day streak 🔥</p>
+          <p className="text-muted-foreground">Growing in faith, at your pace</p>
         </div>
         <Button variant="ghost" size="icon">
           <Settings className="h-5 w-5" />
         </Button>
       </motion.div>
 
-      {/* Progress Overview */}
+      {/* Journey Highlights */}
       <Card variant="gold">
         <CardContent className="p-5">
           <h3 className="mb-4 font-display text-lg font-semibold text-foreground">
-            Weekly Progress
+            Your Spiritual Journey
           </h3>
-          <div className="grid grid-cols-7 gap-2">
-            {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
-              <div key={`${day}-${index}`} className="flex flex-col items-center gap-1">
-                <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium ${
-                    index < 5
-                      ? "bg-gradient-gold text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {index < 5 ? "✓" : day}
+          <div className="space-y-3">
+            {journeyHighlights.map((highlight, index) => (
+              <motion.div
+                key={highlight.title}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="flex items-center gap-3"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background/50">
+                  <highlight.icon className={`h-5 w-5 ${highlight.color}`} />
                 </div>
-                <span className="text-xs text-muted-foreground">{day}</span>
-              </div>
+                <div>
+                  <p className="font-medium text-foreground">{highlight.title}</p>
+                  <p className="text-xs text-muted-foreground">{highlight.description}</p>
+                </div>
+              </motion.div>
             ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* Stats Card */}
+      {/* Reflection Card */}
       <Card variant="default">
         <CardContent className="p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Total Reflections</span>
-            <span className="font-semibold text-foreground">47</span>
+          <div className="flex items-center gap-3">
+            <Heart className="h-5 w-5 text-terracotta" />
+            <div>
+              <p className="font-medium text-foreground">Your Reflection Space</p>
+              <p className="text-sm text-muted-foreground">
+                This journey is personal. Take each step at your own pace, 
+                without pressure or comparison.
+              </p>
+            </div>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Verses Explored</span>
-            <span className="font-semibold text-foreground">128</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Paths Completed</span>
-            <span className="font-semibold text-foreground">2 of 6</span>
-          </div>
-          <Progress value={33} variant="gold" />
         </CardContent>
       </Card>
 
@@ -76,13 +103,13 @@ export function ProfileView() {
             </div>
             <div className="flex-1">
               <h3 className="font-display text-lg font-semibold text-foreground">
-                Go Premium
+                Go Deeper
               </h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                Unlock all spiritual paths, deeper reflections, and exclusive content.
+                Unlock all spiritual paths, deeper reflections, and extended content for your journey.
               </p>
               <Button variant="gold" size="sm" className="mt-3">
-                Upgrade Now
+                Explore Premium
               </Button>
             </div>
           </div>
@@ -92,9 +119,9 @@ export function ProfileView() {
       {/* Menu Items */}
       <div className="space-y-2">
         {[
-          { icon: Bell, label: "Reminders", desc: "Daily notification" },
-          { icon: Gift, label: "Support the Mission", desc: "Make a donation" },
-          { icon: Heart, label: "Share with Friends", desc: "Spread the word" },
+          { icon: Bell, label: "Gentle Reminders", desc: "Optional daily invitation" },
+          { icon: Gift, label: "Support the Mission", desc: "Help others discover faith" },
+          { icon: Heart, label: "Share with Friends", desc: "Invite someone on this journey" },
         ].map((item) => (
           <Card key={item.label} variant="interactive">
             <CardContent className="flex items-center justify-between p-4">

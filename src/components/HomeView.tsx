@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { DailyReflectionCard } from "@/components/DailyReflectionCard";
 import { PathCard, SpiritualPath } from "@/components/PathCard";
-import { StatsRow } from "@/components/StatsRow";
-import { QuizExperience } from "@/components/QuizExperience";
+import { JourneyMilestones } from "@/components/JourneyMilestones";
 
 const spiritualPaths: SpiritualPath[] = [
   {
@@ -11,9 +9,7 @@ const spiritualPaths: SpiritualPath[] = [
     title: "Finding Hope",
     description: "Discover God's promises for your future and learn to trust in His plan.",
     icon: "🌅",
-    progress: 60,
-    totalLessons: 10,
-    completedLessons: 6,
+    status: "in-progress",
     isPremium: false,
     color: "gold",
   },
@@ -22,9 +18,7 @@ const spiritualPaths: SpiritualPath[] = [
     title: "The Path of Forgiveness",
     description: "Experience freedom through the transformative power of forgiveness.",
     icon: "🕊️",
-    progress: 30,
-    totalLessons: 8,
-    completedLessons: 2,
+    status: "started",
     isPremium: false,
     color: "sage",
   },
@@ -33,9 +27,7 @@ const spiritualPaths: SpiritualPath[] = [
     title: "Growing in Faith",
     description: "Strengthen your trust in God through daily spiritual practices.",
     icon: "🌱",
-    progress: 0,
-    totalLessons: 12,
-    completedLessons: 0,
+    status: "not-started",
     isPremium: true,
     color: "terracotta",
   },
@@ -53,14 +45,14 @@ export function HomeView({ onStartQuiz }: HomeViewProps) {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <p className="text-muted-foreground">Good morning</p>
+        <p className="text-muted-foreground">Welcome back</p>
         <h1 className="font-display text-3xl font-bold text-foreground">
-          Begin with peace
+          Continue in peace
         </h1>
       </motion.div>
 
-      {/* Stats */}
-      <StatsRow />
+      {/* Journey Milestones */}
+      <JourneyMilestones />
 
       {/* Daily Reflection */}
       <DailyReflectionCard onStart={onStartQuiz} />
@@ -69,7 +61,7 @@ export function HomeView({ onStartQuiz }: HomeViewProps) {
       <section>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-display text-xl font-semibold text-foreground">
-            Continue Your Journey
+            Your Spiritual Paths
           </h2>
         </div>
         <div className="grid gap-4">
