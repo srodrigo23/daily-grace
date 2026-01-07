@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { DailyReflectionCard } from "@/components/DailyReflectionCard";
 import { PathCard, SpiritualPath } from "@/components/PathCard";
-import { JourneyMilestones } from "@/components/JourneyMilestones";
 
 const spiritualPaths: SpiritualPath[] = [
   {
@@ -50,9 +49,6 @@ export function HomeView({ onStartQuiz }: HomeViewProps) {
           Continue in peace
         </h1>
       </motion.div>
-
-      {/* Journey Milestones */}
-      <JourneyMilestones />
 
       {/* Daily Reflection */}
       <DailyReflectionCard onStart={onStartQuiz} />
