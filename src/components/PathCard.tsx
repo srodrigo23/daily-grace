@@ -1,17 +1,16 @@
 import { motion } from "framer-motion";
-import { Lock, Check } from "lucide-react";
+import { Lock, Check, CircleDot, Circle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+
+export type PathStatus = "not-started" | "started" | "in-progress" | "completed";
 
 export interface SpiritualPath {
   id: string;
   title: string;
   description: string;
   icon: string;
-  progress: number;
-  totalLessons: number;
-  completedLessons: number;
+  status: PathStatus;
   isPremium: boolean;
   color: "gold" | "sage" | "terracotta";
 }
@@ -27,10 +26,24 @@ const colorClasses = {
   terracotta: "bg-terracotta-light border-terracotta/20",
 };
 
-const progressVariants = {
-  gold: "gold" as const,
-  sage: "sage" as const,
-  terracotta: "gold" as const,
+const statusLabels: Record<PathStatus, string> = {
+  "not-started": "Begin this journey",
+  "started": "Just beginning",
+  "in-progress": "On this path",
+  "completed": "Journey complete",
+};
+
+const StatusIcon = ({ status }: { status: PathStatus }) => {
+  switch (status) {
+    case "completed":
+      return <Check className="h-4 w-4 text-sage" />;
+    case "in-progress":
+      return <CircleDot className="h-4 w-4 text-primary" />;
+    case "started":
+      return <Circle className="h-4 w-4 text-muted-foreground" />;
+    default:
+      return null;
+  }
 };
 
 export function PathCard({ path, onClick }: PathCardProps) {
@@ -66,20 +79,11 @@ export function PathCard({ path, onClick }: PathCardProps) {
             {path.description}
           </p>
           
-          <div className="mt-4 space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">
-                {path.completedLessons} of {path.totalLessons} lessons
-              </span>
-              {path.progress === 100 && (
-                <Check className="h-4 w-4 text-sage" />
-              )}
-            </div>
-            <Progress
-              value={path.progress}
-              variant={progressVariants[path.color]}
-              size="sm"
-            />
+          <div className="mt-4 flex items-center gap-2">
+            <StatusIcon status={path.status} />
+            <span className="text-xs text-muted-foreground">
+              {statusLabels[path.status]}
+            </span>
           </div>
         </CardContent>
       </Card>
